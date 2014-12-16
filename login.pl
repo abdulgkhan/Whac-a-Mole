@@ -86,6 +86,8 @@ if (checklogin($query->param('username'), $query->param('password')) != 0) {
 #Create session for user
 my $session = new CGI::Session(undef, undef, {Directory=>'/Library/WebServer/CGI-Executables'});
 
+# Force session to expire if it has been longer than an hour since the last access
+$session->expire(3600);
 
 $session->param("username", $query->param('username'));
 $session->param("opponent", undef); #Seems like opponent session data is saved even though we start a new session

@@ -22,7 +22,7 @@
 
 use strict;
 use CGI;
-use CGI::Session;
+use CGI::Session qw[-ip-match];
 use Crypt::SaltedHash;
 
 sub validateName {

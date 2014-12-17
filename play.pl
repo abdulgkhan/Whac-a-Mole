@@ -28,7 +28,7 @@ sub printInvalidInput {
         print q[<html><h1> Invalid input detected.  Please fix and retry </h1></html>] . "\n";
 }
 sub validateName {
-        return (@_[0] = (@_[0] =~ /^([a-zA-Z0-9_.]*)$/));
+        return (@_[0] = (@_[0] =~ /^([a-zA-Z0-9_.]{1,20})$/));
 }
 
 # $username must be defined and can't be equal to the opponents names and both names mus pass whitelist

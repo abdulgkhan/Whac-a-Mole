@@ -196,8 +196,6 @@ if ( !defined $username ) {
         print q[<html> Welcome ] . $username . "!  ";
         print "Thanks for playing" . (defined $opponent ? " " . $opponent . "." : "!");
         print " With pattern " . $pattern unless (!defined $pattern);
-        print " Could not cancel game, " . $opponent . " has moved" unless (!defined $opponent || !defined $cgi->param('newopponent'));
-        print q[<br><br>];
 }
 
 # if the user is looking for a new opponent we may have to
@@ -238,13 +236,25 @@ if (defined $opponent && defined $cgi->param('newopponent')) {
                                         truncate(GAMEFILE, $addr);
                                         $opponent = undef;
                                 }
+                        } else {
+                                while (<OPPONENT>) {
+                                        $numOfOpponentMoves++;
+                                }
+                                if ($numOfLines == $numOfOpponentMoves) {
+                                        $opponent = undef;
+                                }
                         }
+                        close OPPONENT;
                 } else {
                         truncate(<GAMEFILE>, 0);
                         $opponent = undef;
                 }
+                close GAMEFILE;
         }
 }
+
+print " Could not cancel game, " . $opponent . " has moved" unless (!defined $opponent || !defined $cgi->param('newopponent'));
+print q[<br><br>];
 
 $session->param( 'opponent', $opponent );
 

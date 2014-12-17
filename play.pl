@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w -T
 use strict;
 use CGI;
-use CGI::Session;
+use CGI::Session qw/-ip-match/;
 
 sub logit { 
         open LOGFILE, '+>>', 'logfile';

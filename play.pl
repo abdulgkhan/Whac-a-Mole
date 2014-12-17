@@ -170,20 +170,29 @@ my $username = $session->param( 'username' );
 my $opponent = (defined $session->param( 'opponent' ) ? $session->param( 'opponent' ) : $cgi->param( 'opponent' ));
 my $pattern = $cgi->param( 'pattern' );
 
-if (!validateNames($username, $opponent)) {
-        #input did not pass validation whitelists
-        logit("Invalid Names for game play " . $username . " vs. " . $opponent);
-        printInvalidInput();
-        exit(0);
-}
-
-logit("Valid Names for game play " . $username . " vs. " . $opponent);
 
 if ( !defined $username ) {
         print q[<html> <center> <h1> You do not have a valid session!] . "\n";
         print q[<br><a href="home.pl">Login to Whac-A-Mole</a></h1> </center> </html>] . "\n";
         exit 0;
 } else {
+        if (!validateNames($username, $opponent)) {
+                #input did not pass validation whitelists
+                logit("Invalid Names for game play " . $username . " vs. " . $opponent);
+                printInvalidInput();
+                exit(0);
+        }
+
+        logit("Valid Names for game play " . $username . " vs. " . $opponent);
+
+
+        if ( !validatePattern($pattern) )  {
+                print q[<html>Invalid Pattern.  Please enter 5 numbers seperated by only a comma</html>];
+                $pattern = undef;
+        }
+
+        logit("Valid Pattern " . $pattern . " entered in the " . $username . " vs. " . $opponent . " game.");
+
         print q[<html> Welcome ] . $username . "!  ";
         print "Thanks for playing" . (defined $opponent ? " " . $opponent . "." : "!");
         print " With pattern " . $pattern unless (!defined $pattern);
@@ -238,14 +247,6 @@ if (defined $opponent && defined $cgi->param('newopponent')) {
 }
 
 $session->param( 'opponent', $opponent );
-
-
-if ( !validatePattern($pattern) )  {
-        print q[<html>Invalid Pattern.  Please enter 5 numbers seperated by only a comma</html>];
-        $pattern = undef;
-}
-
-logit("Valid Pattern " . $pattern . " entered in the " . $username . " vs. " . $opponent . " game.");
 
 if (!defined $opponent) {
         my $name = $username;
